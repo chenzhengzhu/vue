@@ -5,7 +5,7 @@
                 <el-row style="height: 410px">
                     <el-image
                             style="width: 100%; height: 300px"
-                            :src="this.$route.query.name.imgurl"
+                            :src="imgs[this.$route.query.name.productid-1].img"
                             fit="fill"></el-image>
                     <span style="margin-top: 15px;">{{this.$route.query.name.desc}}</span>
                 </el-row>
@@ -33,13 +33,24 @@
     import { AddPdtToCar } from "../api/MyCar";
     import { addOrder } from  "../api/order";
     export default {
-        name: "add_cars",
+        name: "add_car",
         components: {ElRow},
         data() {
             return {
-                count: 1,
+                count: this.$route.query.name.count === null ? 1: this.$route.query.name.count,
                 // names: this.$route.query.name === null ? 0: this.$route.query.name,
-                i: this.$route.query.name
+                i: this.$route.query.name,
+                imgs: [
+                    { img: require("../image/wife.png")},
+                    { img: require("../image/rice.png")},
+                    { img: require("../image/chrken.png")},
+                    { img: require("../image/rice_cake.png")},
+                    { img: require("../image/fook.png")},
+                    { img: require("../image/duck_feet.png")},
+                    { img: require("../image/saltines.png")},
+                    { img: require("../image/Smile.png")},
+                    { img: require("../image/port_shop.png")}
+                ]
             }
         },
         methods: {
@@ -47,11 +58,11 @@
                 this.count += 1;
             },
             minu() {
-              this.count -= 1;
+                this.count -= 1;
             },
             payfor() {
                 var _this = this;
-                addOrder({username: this.$store.state.usname, count: this.count, comm:this.$route.query.name})
+                addOrder({username: this.$store.state.usname, count: this.$route.query.name.count, comm:this.$route.query.name})
                     .then(function(response) {
                         if(response.data.code === "200") {
                             _this.$router.push({
@@ -89,8 +100,8 @@
                         }
 
                     }).catch(function (error) {
-                        console.log(error);
-                    })
+                    console.log(error);
+                })
             }
         }
     }

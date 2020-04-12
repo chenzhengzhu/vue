@@ -16,7 +16,7 @@
                 <hr />
                 <el-row>
                     <el-button class="btn" @click="addCar(item)" type="success" round>添加到购物车</el-button>
-                    <el-button class="btn" type="success" round>直接购买</el-button>
+                    <el-button class="btn" @click="addCar(item)" type="success" round>直接购买</el-button>
                 </el-row>
             </el-row>
         </div>
@@ -26,6 +26,7 @@
 <script>
     import ElRow from "element-ui/packages/row/src/row";
     import {FindProductList} from "../api/Product";
+    import { addOrder } from "../api/order";
     export default {
         name: "product",
         components: {ElRow},

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import querystring from 'querystring'
 
-const service = axios.create({
+const service = axios.create(/*{
     transformRequest: [data => {
         return querystring.stringify(data);
     }]
-});
+}*/);
 
 // 请求拦截器
 axios.interceptors.request.use(function (config) {

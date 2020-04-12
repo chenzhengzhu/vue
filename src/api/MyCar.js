@@ -8,8 +8,20 @@ export function AddPdtToCar(data) {
 }
 
 /*
-* 注册
+* 查询购物车列表
 * */
-export function ToRegister(data) {
-    return  service.post('http://localhost:8181/register', data)
+export function QueryCar(data) {
+    return  service.post('http://localhost:8181/findMyCarList', data)
+}
+/*
+* 移除购物信息
+* */
+export function RemoveCar(data) {
+    return  service.post('http://localhost:8181/removeMyCar', data)
+}
+/*
+* 移除全部购物信息
+* */
+export function RemoveAllCar(data) {
+    return  service.post('http://localhost:8181/removeAllMyCar', data)
 }

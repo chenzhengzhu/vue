@@ -1,7 +1,7 @@
 <template>
     <div style="overflow-y: auto">
         <div style="text-align: center; margin-top: 20px">
-            <el-input v-model="tableDataName" placeholder="请输入订单号" style="width:240px;margin-left: 60px; float: left"></el-input>
+            <el-input v-model="tableDataName" placeholder="请输入商品名称" style="width:240px;margin-left: 60px; float: left"></el-input>
             <el-button style="margin-left: 50px; margin-bottom: 30px; float: left" type="primary" @click="doFilter">搜索</el-button>
             <el-button style="margin-left: 50px; float: left" type="primary" @click="openData">展示数据</el-button>
             <el-button style="margin-right: 50px;float: right" type="danger" @click="removeSelect">删除所选的</el-button>
@@ -20,7 +20,7 @@
                     </el-table-column>
 
                     <!--<el-table-column prop="id" label="序号" width="60" />-->
-                    <el-table-column prop="orderno" label="订单号" width="400" />
+                    <el-table-column prop="desc" label="商品" width="460" />
                     <el-table-column prop="price" label="价格" width="100" />
                     <el-table-column prop="count" label="数量" width="80" />
                     <el-table-column prop="payforst" label="支付状态" width="80" />
@@ -28,9 +28,7 @@
 
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button style="margin: 10px; width: 100px; height: 40px"
-                                       @click="edit(scope.row)" type="success" round>查看明细</el-button>
-                            <el-button style="margin: 15px;" @click="remove(scope.row)" type="danger" round>删除</el-button>
+                            <el-button style="margin: 15px; width: 100px" @click="remove(scope.row)" type="danger" round>删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -51,7 +49,7 @@
 
 <script>
     import { QueryCar, RemoveCar, RemoveAllCar } from "../api/MyCar";
-    import { findOrderList, removeOrder, removeOrders } from "../api/order";
+    import { findOrderDetail } from "../api/order";
     export default {
         name: "car",
         data() {
@@ -69,7 +67,7 @@
                 st: false,
                 checkboxGroup: [],
                 tempdata: [],
-                initcode: "https://www.baidu.com/"
+                i: this.$route.query.name
             };
         },
         mounted:function () {
@@ -101,21 +99,10 @@
 
             getInit() {
                 var _this = this;
-                findOrderList({ username: this.$store.state.usname}).then(function (response) {
+                findOrderDetail({ username: this.$store.state.usname, productid:this.$route.query.name.productid,
+                    orderno:this.$route.query.name.orderno }).then(function (response) {
                     _this.tableDataBegin = response.data.data;
-                    _this.totalItems = _this.tableDataBegin.length;
-                    if (_this.totalItems > _this.pageSize) {
-                        for (let index = 0; index < _this.pageSize; index++) {
-                            _this.tableDataBegin[index].id = index + 1;
-                            _this.tableDataEnd.push(_this.tableDataBegin[index]);
-                        }
-                    } else {
-                        // _this.tableDataEnd = _this.tableDataBegin;
-                        for (let index = 0; index < _this.totalItems; index++) {
-                            _this.tableDataBegin[index].id = index + 1;
-                            _this.tableDataEnd.push(_this.tableDataBegin[index]);
-                        }
-                    };
+                    _this.tableDataEnd.push(_this.tableDataBegin);
                 }).catch(function (error) {
                     console.log(error)
                 });
@@ -132,8 +119,8 @@
                 //每次手动将数据置空,因为会出现多次点击搜索情况
                 this.filterTableDataEnd=[]
                 this.tableDataBegin.forEach((value, index) => {
-                    if(value.orderno){
-                        if(value.orderno.indexOf(this.tableDataName)>=0){
+                    if(value.desc){
+                        if(value.desc.indexOf(this.tableDataName)>=0){
                             this.filterTableDataEnd.push(value)
                             // this.tableDataEnd.push(value)
                         }
@@ -181,17 +168,17 @@
             },
             remove(forName) {
                 var _this = this;
-                removeOrder({ productid: forName.productid, orderno: forName.orderno, username: this.$store.state.usname})
+                RemoveCar({ productid: forName.productid, orderno: forName.orderno, username: this.$store.state.usname})
                     .then(function (response) {
-                    _this.tableDataEnd = [];
-                    _this.getInit();
-                }).catch(function (error) {
+                        _this.tableDataEnd = [];
+                        _this.getInit();
+                    }).catch(function (error) {
                     console.log(error)
                 });
             },
             removeSelect() {
                 var _this = this;
-                removeOrders({ username: this.$store.state.usname, comm: this.tempdate}).then(function (response) {
+                RemoveAllCar({ username: this.$store.state.usname, comm: this.tempdate}).then(function (response) {
                     _this.tableDataEnd = [];
                     _this.getInit();
                 }).catch(function (error) {

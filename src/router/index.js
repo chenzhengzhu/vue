@@ -164,6 +164,24 @@ const routes = [
                   icon: "addcar"
               },
               component: () => import('@/components/addCars.vue')
+          },
+          {
+              path: "/addcar",
+              name: "addCar",
+              meta: {
+                  name: "修改购物车",
+                  icon: "addcar"
+              },
+              component: () => import('@/components/addCar.vue')
+          },
+          {
+              path: "/OrderDetail",
+              name: "orderDetail",
+              meta: {
+                  name: "订单明细",
+                  icon: "order"
+              },
+              component: () => import('@/components/OrderDetail.vue')
           }
       ]
 
